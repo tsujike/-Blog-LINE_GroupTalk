@@ -89,6 +89,56 @@ class LINE {
 
   }
 
+  /** グループトーク情報を取得するメソッド
+ * @param{string} グループトークID
+ * @return{string} グループトーク情報 
+ */
+  getGroupTalkInfo(groupId) {
+
+    const url = `https://api.line.me/v2/bot/group/${groupId}/summary`;
+    const headers = {
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': 'Bearer ' + this.ACCESS_TOKEN,
+    };
+
+    const options = {
+      'headers': headers,
+      'method': 'get'
+    };
+
+    const data = UrlFetchApp.fetch(url, options);
+    return data
+  }
+
+
+  /** グループトークにPUSHメッセージ
+ * @param{string} メッセージオブジェクトのJSON
+ * @param{string} ユーザーID
+ */
+  sendGroupTalkMessage(messageObject, groupId) {
+
+    const url = "https://api.line.me/v2/bot/message/push";
+    const headers = {
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': 'Bearer ' + this.ACCESS_TOKEN,
+    };
+
+    const payload = {
+      'messages': messageObject,
+      'to': groupId,
+    };
+
+    const options = {
+      'headers': headers,
+      'method': 'post',
+      'payload': JSON.stringify(payload),
+    };
+
+    const response = UrlFetchApp.fetch(url, options);
+    const statusCode = response.getResponseCode();
+    return `[${statusCode}]メッセージを送信しました`
+
+  }
 
 
 }
@@ -110,44 +160,44 @@ function testLINE() {
   // console.log(l.sendBroadbandMessage(messageObject));
 
 
-  const messageObject = [
-    {
-      "type": "template",
-      "altText": "アンケートに回答ください",
-      "template": {
-        "type": "buttons",
-        "title": "ご職業は？",
-        "text": "以下の中からお選びください",
-        "actions": [
-          {
-            "type": "postback",
-            "label": "会社役員",
-            "data": "会社役員", //.postback.dataで文字列を返す
-            "displayText": "会社役員"
-          },
-          {
-            "type": "postback",
-            "label": "会社員",
-            "data": "会社員", //.postback.dataで文字列を返す
-            "displayText": "会社員"
-          },
-          {
-            "type": "postback",
-            "label": "自営業・フリーランス",
-            "data": "自営業・フリーランス", //.postback.dataで文字列を返す
-            "displayText": "自営業・フリーランス"
-          },
-          {
-            "type": "postback",
-            "label": "その他",
-            "data": "その他", //.postback.dataで文字列を返す
-            "displayText": "その他"
-          }
-        ]
-      }
-    }
-  ];
-  console.log(l.sendBroadbandMessage(messageObject));
+  // const messageObject = [
+  //   {
+  //     "type": "template",
+  //     "altText": "アンケートに回答ください",
+  //     "template": {
+  //       "type": "buttons",
+  //       "title": "ご職業は？",
+  //       "text": "以下の中からお選びください",
+  //       "actions": [
+  //         {
+  //           "type": "postback",
+  //           "label": "会社役員",
+  //           "data": "会社役員", //.postback.dataで文字列を返す
+  //           "displayText": "会社役員"
+  //         },
+  //         {
+  //           "type": "postback",
+  //           "label": "会社員",
+  //           "data": "会社員", //.postback.dataで文字列を返す
+  //           "displayText": "会社員"
+  //         },
+  //         {
+  //           "type": "postback",
+  //           "label": "自営業・フリーランス",
+  //           "data": "自営業・フリーランス", //.postback.dataで文字列を返す
+  //           "displayText": "自営業・フリーランス"
+  //         },
+  //         {
+  //           "type": "postback",
+  //           "label": "その他",
+  //           "data": "その他", //.postback.dataで文字列を返す
+  //           "displayText": "その他"
+  //         }
+  //       ]
+  //     }
+  //   }
+  // ];
+  // console.log(l.sendBroadbandMessage(messageObject));
 
 
 
@@ -175,4 +225,26 @@ function testLINE() {
   // const replyToken = "2ca179cb011044718e6c0dfc26b5f780";
 
   // console.log(l.sendReplyMessage(messageObject, replyToken));
+
+    const messageObject = [{
+    type: "text",
+    text: `グループへのオススメ情報です🍩
+    
+    
+    
+    
+    
+    
+    
+    
+    改行できないの？
+    `
+  }];
+
+  const groupId = "";
+  console.log(l.sendGroupTalkMessage(messageObject, groupId));
+
+
 }
+
+
